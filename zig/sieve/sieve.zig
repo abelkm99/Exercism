@@ -18,3 +18,4 @@ pub fn primes(buffer: []u32, limit: u32) []u32 {
     }
     return buffer[0..idx];
 }
+
