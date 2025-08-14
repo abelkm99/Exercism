@@ -1,21 +1,15 @@
 const std = @import("std");
-pub fn primes(buffer: []u32, limit: u32) []u32 {
-    var flag: [1005]bool = undefined;
-    var idx: usize = 0;
-    _ = &idx;
-    @memset(&flag, false);
-    for (1..limit + 1) |d| {
-        if (d == 1) continue;
-
-        if (flag[d] == true) continue;
-
-        buffer[idx] = @intCast(d);
-        idx += 1;
-        var i = d;
-        while (i < limit + 1) : (i += d) {
-            flag[i] = true;
-        }
+pub fn primes(buffer: []u32, comptime limit: u32) []u32 {
+    var sieve = std.bit_set.IntegerBitSet(limit + 1).initEmpty();
+    sieve.set(0); // 0 is not prime
+    sieve.set(1); // 1 is not prime
+    var cnt: usize = 0;
+    for (0..limit + 1) |i| {
+        if (sieve.isSet(i)) continue;
+        buffer[cnt] = @intCast(i);
+        cnt += 1;
+        var j = i;
+        while (j <= limit) : (j += i) sieve.set(j);
     }
-    return buffer[0..idx];
+    return buffer[0..cnt];
 }
-
